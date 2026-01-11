@@ -199,7 +199,8 @@
                     currentLabel: '',
                     searchQuery: '',
                     repoOwner: '{{REPO_OWNER}}',
-                    repoName: '{{REPO_NAME}}'
+                    repoName: '{{REPO_NAME}}',
+                    githubToken: '{{GITHUB_TOKEN}}'
                 }
             },
             computed: {
@@ -226,7 +227,19 @@
                     this.error = null;
                     try {
                         // Fetch only issues, not pull requests
-                        const response = await fetch(`https://api.github.com/repos/${this.repoOwner}/${this.repoName}/issues?state=open&per_page=100`);
+                        const headers = {
+                            'Accept': 'application/vnd.github.v3+json'
+                        };
+
+                        // Add authorization header if token is provided
+                        if (this.githubToken) {
+                            headers['Authorization'] = `token ${this.githubToken}`;
+                        }
+
+                        const response = await fetch(`https://api.github.com/repos/${this.repoOwner}/${this.repoName}/issues?state=open&per_page=100`, {
+                            headers: headers
+                        });
+
                         if (!response.ok) throw new Error('Failed to fetch issues');
                         const data = await response.json();
                         // Filter out pull requests

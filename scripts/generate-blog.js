@@ -15,6 +15,7 @@ const https = require('https');
  *   --title <标题>        博客标题（默认：仓库名）
  *   --author <名称>       作者名称（默认：仓库所有者）
  *   --avatar <url>        头像 URL（默认：GitHub 头像）
+ *   --token <token>       GitHub Personal Access Token（可选，用于提高 API 速率限制）
  */
 
 function parseArgs() {
@@ -28,6 +29,7 @@ function parseArgs() {
         console.error('  --title <标题>        博客标题（默认："<owner> 的博客"）');
         console.error('  --author <名称>       作者名称（默认：仓库所有者）');
         console.error('  --avatar <url>        头像 URL（默认：GitHub 头像）');
+        console.error('  --token <token>       GitHub Personal Access Token（可选）');
         process.exit(1);
     }
 
@@ -37,7 +39,8 @@ function parseArgs() {
         outputDir: './blog',
         blogTitle: null,
         authorName: null,
-        avatarUrl: null
+        avatarUrl: null,
+        githubToken: null
     };
 
     for (let i = 2; i < args.length; i++) {
@@ -53,6 +56,9 @@ function parseArgs() {
                 break;
             case '--avatar':
                 config.avatarUrl = args[++i];
+                break;
+            case '--token':
+                config.githubToken = args[++i];
                 break;
         }
     }
@@ -111,6 +117,7 @@ async function generateBlog(config) {
     template = template.replace(/\{\{REPO_OWNER\}\}/g, config.repoOwner);
     template = template.replace(/\{\{REPO_NAME\}\}/g, config.repoName);
     template = template.replace(/\{\{GITHUB_REPO_URL\}\}/g, `https://github.com/${config.repoOwner}/${config.repoName}`);
+    template = template.replace(/\{\{GITHUB_TOKEN\}\}/g, config.githubToken || '');
 
     // Write index.html
     const outputPath = path.join(config.outputDir, 'index.html');

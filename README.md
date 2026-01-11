@@ -44,12 +44,21 @@ node scripts/generate-blog.js <repo-owner> <repo-name> [选项]
 - `--title <标题>` - 博客标题（默认："{owner} 的博客"）
 - `--author <名称>` - 作者名称（默认：仓库所有者）
 - `--avatar <url>` - 头像 URL（默认：GitHub 头像）
+- `--token <token>` - GitHub Personal Access Token（可选，提高 API 速率限制）
 
 **示例：**
 
 ```bash
 node scripts/generate-blog.js xingbofeng xingbofeng.github.io \
   --title "Counterxing 的博客" \
+  --output ./my-blog
+```
+
+**使用 token 避免速率限制：**
+
+```bash
+node scripts/generate-blog.js xingbofeng xingbofeng.github.io \
+  --token ghp_xxxxxxxxxxxx \
   --output ./my-blog
 ```
 
@@ -81,8 +90,12 @@ node scripts/generate-blog.js xingbofeng xingbofeng.github.io \
 ## 注意事项
 
 - 仓库必须有打开状态的 issues 才会显示文章
-- GitHub API 有速率限制（未认证：60次/小时）
-- 建议为生产环境配置 GitHub token 以提高限制
+- GitHub API 速率限制：
+  - 未认证：60 次/小时
+  - 使用 token：5000 次/小时
+- 推荐为生产环境配置 GitHub Personal Access Token
+- 创建 token：GitHub Settings → Developer settings → Personal access tokens
+- Token 只需要 `public_repo` 权限（公开仓库）
 
 ## 示例
 

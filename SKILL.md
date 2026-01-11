@@ -26,6 +26,7 @@ description: 根据 GitHub Issues 生成精美的博客网站。当用户想要�
 - 博客标题（可选，默认为 "{owner} 的博客"）
 - 作者名称（可选，默认为仓库所有者）
 - 头像 URL（可选，默认为 GitHub 头像）
+- GitHub Personal Access Token（可选，用于提高 API 速率限制）
 
 ### 步骤 2：生成博客
 
@@ -40,10 +41,16 @@ node scripts/generate-blog.js <repo-owner> <repo-name> [选项]
 - `--title <标题>`：博客标题
 - `--author <名称>`：作者名称
 - `--avatar <url>`：头像 URL
+- `--token <token>`：GitHub Personal Access Token（可选）
 
 示例：
 ```bash
 node scripts/generate-blog.js xingbofeng xingbofeng.github.io --output ./my-blog --title "Counterxing 的博客"
+```
+
+使用 token 提高 API 速率限制：
+```bash
+node scripts/generate-blog.js xingbofeng xingbofeng.github.io --token ghp_xxxxxxxxxxxx --output ./my-blog
 ```
 
 ### 步骤 3：验证并指导用户
@@ -110,6 +117,11 @@ node scripts/generate-blog.js username blog-repo --title "我的技术博客" --
 - 检查浏览器控制台是否有错误
 
 ### API 速率限制
-- GitHub API 有速率限制（未认证请求每小时 60 次）
-- 如需更高限制，用户可以添加 GitHub token 认证
-- 考虑为生产环境使用缓存或静态生成
+
+- GitHub API 有速率限制：
+  - **未认证请求**：每小时 60 次
+  - **使用 token 认证**：每小时 5000 次
+- 推荐为生产环境配置 GitHub Personal Access Token
+- 创建 token：GitHub Settings → Developer settings → Personal access tokens → Generate new token
+- Token 只需要 `public_repo` 权限（如果是公开仓库）
+- 使用 `--token` 参数传入 token 即可提高限制
